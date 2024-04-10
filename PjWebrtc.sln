@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PjWebrtc", "PjWebrtc\PjWebrtc.vcxproj", "{DB8F0E92-55A5-4ED0-8D76-404691D867F9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtWebrtc", "QtWebrtc\QtWebrtc.vcxproj", "{942A4D0A-303B-4B34-9EA6-E4640506B0C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,12 @@ Global
 		{DB8F0E92-55A5-4ED0-8D76-404691D867F9}.Release|x64.Build.0 = Release|x64
 		{DB8F0E92-55A5-4ED0-8D76-404691D867F9}.Release|x86.ActiveCfg = Release|Win32
 		{DB8F0E92-55A5-4ED0-8D76-404691D867F9}.Release|x86.Build.0 = Release|Win32
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Debug|x64.ActiveCfg = Debug|x64
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Debug|x64.Build.0 = Debug|x64
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Debug|x86.ActiveCfg = Debug|x64
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Release|x64.ActiveCfg = Release|Win32
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Release|x86.ActiveCfg = Release|Win32
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
