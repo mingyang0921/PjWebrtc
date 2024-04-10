@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source\include\json">
+      <UniqueIdentifier>{49BD866D-53DD-0CEF-9C72-BC997D203959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\include">
+      <UniqueIdentifier>{5EC21021-48DC-8550-2FEA-EB0B9F483B3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{DA2023F0-71E4-A00C-1CFD-FD2374E50D28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\src\lib_json">
+      <UniqueIdentifier>{AC58805A-5B0F-61B3-B48D-317B042D7B5A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\src">
+      <UniqueIdentifier>{F9FFABFB-6E99-945C-1827-06D4452B4B43}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/allocator.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/assertions.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/config.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/forwards.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/json.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/json_features.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/reader.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/value.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/version.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <None Include="../../../../../third_party/jsoncpp/source/include/json/writer.h">
+      <Filter>source\include\json</Filter>
+    </None>
+    <CustomBuild Include="../../../../../third_party/jsoncpp/source/src/lib_json/json_reader.cpp">
+      <Filter>source\src\lib_json</Filter>
+    </CustomBuild>
+    <None Include="../../../../../third_party/jsoncpp/source/src/lib_json/json_tool.h">
+      <Filter>source\src\lib_json</Filter>
+    </None>
+    <CustomBuild Include="../../../../../third_party/jsoncpp/source/src/lib_json/json_value.cpp">
+      <Filter>source\src\lib_json</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../third_party/jsoncpp/source/src/lib_json/json_writer.cpp">
+      <Filter>source\src\lib_json</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
