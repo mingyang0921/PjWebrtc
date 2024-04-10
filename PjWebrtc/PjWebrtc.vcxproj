@@ -114,17 +114,19 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>USE_AURA=1;_HAS_NODISCARD;_HAS_EXCEPTIONS=0;__STD_C;_CRT_RAND_S;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_ATL_NO_OPENGL;_WINDOWS;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;PSAPI_VERSION=2;WIN32;_SECURE_ATL;WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP;WIN32_LEAN_AND_MEAN;NOMINMAX;_UNICODE UNICODE;NTDDI_VERSION=NTDDI_WIN10_VB;_WIN32_WINNT=0x0A00;WINVER=0x0A00;_DEBUG;DYNAMIC_ANNOTATIONS_ENABLED=1;WEBRTC_ENABLE_PROTOBUF=0;WEBRTC_INCLUDE_INTERNAL_AUDIO_DEVICE;RTC_ENABLE_VP9;WEBRTC_HAVE_SCTP;WEBRTC_ENABLE_AVX2;RTC_ENABLE_WIN_WGC;WEBRTC_NON_STATIC_TRACE_EVENT_HANDLERS=0;WEBRTC_WIN;ABSL_ALLOCATOR_NOTHROW=1;_ENABLE_EXTENDED_ALIGNED_STORAGE;ABSL_FLAGS_STRIP_NAMES=0;HAVE_WEBRTC_VIDEO;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RTC_ENABLE_WIN_WGC;WEBRTC_USE_X11;USE_AURA=1;_HAS_NODISCARD;_HAS_EXCEPTIONS=0;__STD_C;_CRT_RAND_S;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_ATL_NO_OPENGL;_WINDOWS;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;PSAPI_VERSION=2;WIN32;_SECURE_ATL;WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP;WIN32_LEAN_AND_MEAN;NOMINMAX;_UNICODE UNICODE;NTDDI_VERSION=NTDDI_WIN10_VB;_WIN32_WINNT=0x0A00;WINVER=0x0A00;_DEBUG;DYNAMIC_ANNOTATIONS_ENABLED=1;WEBRTC_ENABLE_PROTOBUF=0;WEBRTC_INCLUDE_INTERNAL_AUDIO_DEVICE;RTC_ENABLE_VP9;WEBRTC_HAVE_SCTP;WEBRTC_ENABLE_AVX2;WEBRTC_NON_STATIC_TRACE_EVENT_HANDLERS=0;WEBRTC_WIN;ABSL_ALLOCATOR_NOTHROW=1;_ENABLE_EXTENDED_ALIGNED_STORAGE;ABSL_FLAGS_STRIP_NAMES=0;HAVE_WEBRTC_VIDEO;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\webrtc\include\third_party\jsoncpp\generated;..\webrtc\include\third_party\jsoncpp\source\include;..\webrtc\include\third_party\libyuv\include;..\webrtc\include\third_party\abseil-cpp;..\webrtc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\webrtc\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>third_party\abseil-cpp\absl\flags\marshalling\marshalling.obj;third_party\abseil-cpp\absl\flags\program_name\program_name.obj;third_party\abseil-cpp\absl\flags\flag\flag.obj;third_party\abseil-cpp\absl\flags\flag_internal\flag.obj;third_party\abseil-cpp\absl\flags\commandlineflag\commandlineflag.obj;third_party\abseil-cpp\absl\flags\commandlineflag_internal\commandlineflag.obj;third_party\abseil-cpp\absl\flags\private_handle_accessor\private_handle_accessor.obj;third_party\abseil-cpp\absl\flags\reflection\reflection.obj;third_party\abseil-cpp\absl\flags\parse\parse.obj;third_party\abseil-cpp\absl\flags\usage\usage.obj;third_party\abseil-cpp\absl\flags\usage_internal\usage.obj;third_party\abseil-cpp\absl\flags\config\usage_config.obj;third_party\jsoncpp\jsoncpp\json_reader.obj;third_party\jsoncpp\jsoncpp\json_value.obj;third_party\jsoncpp\jsoncpp\json_writer.obj;test\field_trial\field_trial.obj;test\video_test_common\test_video_capturer.obj;test\platform_video_capturer\vcm_capturer.obj;rtc_base\rtc_json\json.obj;webrtc.lib;advapi32.lib;comdlg32.lib;dbghelp.lib;dnsapi.lib;gdi32.lib;msimg32.lib;odbc32.lib;odbccp32.lib;oleaut32.lib;shell32.lib;shlwapi.lib;user32.lib;usp10.lib;uuid.lib;version.lib;wininet.lib;winmm.lib;winspool.lib;ws2_32.lib;delayimp.lib;kernel32.lib;ole32.lib;crypt32.lib;iphlpapi.lib;secur32.lib;dmoguids.lib;wmcodecdspuuid.lib;amstrmid.lib;msdmo.lib;strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>third_party\abseil-cpp\absl\flags\marshalling\marshalling.obj;third_party\abseil-cpp\absl\flags\program_name\program_name.obj;third_party\abseil-cpp\absl\flags\flag\flag.obj;third_party\abseil-cpp\absl\flags\flag_internal\flag.obj;third_party\abseil-cpp\absl\flags\commandlineflag\commandlineflag.obj;third_party\abseil-cpp\absl\flags\commandlineflag_internal\commandlineflag.obj;third_party\abseil-cpp\absl\flags\private_handle_accessor\private_handle_accessor.obj;third_party\abseil-cpp\absl\flags\reflection\reflection.obj;third_party\abseil-cpp\absl\flags\parse\parse.obj;third_party\abseil-cpp\absl\flags\usage\usage.obj;third_party\abseil-cpp\absl\flags\usage_internal\usage.obj;third_party\abseil-cpp\absl\flags\config\usage_config.obj;third_party\jsoncpp\jsoncpp\json_reader.obj;third_party\jsoncpp\jsoncpp\json_value.obj;third_party\jsoncpp\jsoncpp\json_writer.obj;test\field_trial\field_trial.obj;test\video_test_common\test_video_capturer.obj;test\platform_video_capturer\vcm_capturer.obj;rtc_base\rtc_json\json.obj;webrtc.lib;advapi32.lib;comdlg32.lib;dbghelp.lib;dnsapi.lib;gdi32.lib;msimg32.lib;odbc32.lib;odbccp32.lib;oleaut32.lib;shell32.lib;shlwapi.lib;user32.lib;usp10.lib;uuid.lib;version.lib;wininet.lib;winmm.lib;winspool.lib;ws2_32.lib;delayimp.lib;kernel32.lib;ole32.lib;crypt32.lib;iphlpapi.lib;secur32.lib;dmoguids.lib;wmcodecdspuuid.lib;amstrmid.lib;msdmo.lib;strmiids.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,6 +150,7 @@
     <ClInclude Include="defaults.h" />
     <ClInclude Include="flag_defs.h" />
     <ClInclude Include="main_wnd.h" />
+    <ClInclude Include="MyCapturer.h" />
     <ClInclude Include="peer_connection_client.h" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +158,7 @@
     <ClCompile Include="defaults.cc" />
     <ClCompile Include="main.cc" />
     <ClCompile Include="main_wnd.cc" />
+    <ClCompile Include="MyCapturer.cc" />
     <ClCompile Include="peer_connection_client.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

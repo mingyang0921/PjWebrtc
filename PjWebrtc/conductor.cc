@@ -45,6 +45,8 @@
 #include "rtc_base/strings/json.h"
 #include "test/vcm_capturer.h"
 
+#include "MyCapturer.h"
+
 namespace {
 // Names used for a IceCandidate JSON object.
 const char kCandidateSdpMidName[] = "sdpMid";
@@ -446,9 +448,13 @@ void Conductor::AddTracks() {
                       << result_or_error.error().message();
   }
 
-  rtc::scoped_refptr<CapturerTrackSource> video_device =
-      CapturerTrackSource::Create();
+  //rtc::scoped_refptr<CapturerTrackSource> video_device =
+ ///     CapturerTrackSource::Create();
+
+  rtc::scoped_refptr<MyCapturer> video_device = new rtc::RefCountedObject<MyCapturer>();
+
   if (video_device) {
+      video_device->startCapturer();
     rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
         peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
     main_wnd_->StartLocalRenderer(video_track_);

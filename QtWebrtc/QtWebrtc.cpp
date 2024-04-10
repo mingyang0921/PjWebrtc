@@ -26,5 +26,8 @@ int QtWebrtc::init_base()
         //client->SignOut();
         return 0;
     }
+    //conductor->peer_connection_->CreateOffer(
+    //    this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+
     return 0;
 }
