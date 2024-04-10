@@ -11,7 +11,7 @@ public:
     QtWebrtc(QWidget *parent = nullptr);
     ~QtWebrtc();
 public:
-    int init();
+    int init_base();
 private:
     Ui::QtWebrtcClass ui;
 };

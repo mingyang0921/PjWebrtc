@@ -104,8 +104,17 @@
     <QtRcc Include="QtWebrtc.qrc" />
     <QtUic Include="QtWebrtc.ui" />
     <QtMoc Include="QtWebrtc.h" />
+    <ClCompile Include="conductor.cc" />
+    <ClCompile Include="defaults.cc" />
+    <ClCompile Include="peer_connection_client.cc" />
     <ClCompile Include="QtWebrtc.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="conductor.h" />
+    <ClInclude Include="defaults.h" />
+    <ClInclude Include="flag_defs.h" />
+    <ClInclude Include="peer_connection_client.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
