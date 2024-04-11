@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PjWebrtc", "PjWebrtc\PjWebrtc.vcxproj", "{DB8F0E92-55A5-4ED0-8D76-404691D867F9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{942A4D0A-303B-4B34-9EA6-E4640506B0C1} = {942A4D0A-303B-4B34-9EA6-E4640506B0C1}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtWebrtc", "QtWebrtc\QtWebrtc.vcxproj", "{942A4D0A-303B-4B34-9EA6-E4640506B0C1}"
 EndProject
