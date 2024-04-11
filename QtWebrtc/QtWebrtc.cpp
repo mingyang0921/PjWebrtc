@@ -1,15 +1,19 @@
 #include "QtWebrtc.h"
 
-#undef emit
-#include "conductor.h"
-#define emit Q_EMIT
+#include "QtWidgetsLocalVideo.h"
+
+//#undef emit
+//#include "conductor.h"
+//#define emit Q_EMIT
 
 QtWebrtc::QtWebrtc(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
 
-    init_base();
+    QtWidgetsLocalVideo* local_video = new QtWidgetsLocalVideo();
+    local_video->show();
+    //init_base();
 }
 
 QtWebrtc::~QtWebrtc()
@@ -17,6 +21,7 @@ QtWebrtc::~QtWebrtc()
 
 int QtWebrtc::init_base()
 {
+#if 0
     PeerConnectionClient client;
     rtc::scoped_refptr<Conductor> conductor(
         new rtc::RefCountedObject<Conductor>(&client));
@@ -28,6 +33,6 @@ int QtWebrtc::init_base()
     }
     //conductor->peer_connection_->CreateOffer(
     //    this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
-
+#endif
     return 0;
 }
