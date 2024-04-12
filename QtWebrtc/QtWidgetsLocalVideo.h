@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_QtWidgetsLocalVideo.h"
 
 #undef emit
+#include "demo_desktop_capture.h"
 #define emit Q_EMIT
 
 class QtWidgetsLocalVideo : public QWidget
@@ -14,10 +14,9 @@ public:
 	QtWidgetsLocalVideo(QWidget *parent = nullptr);
 	~QtWidgetsLocalVideo();
 
-public:
-	int start();
-	int stop();
-
+private slots:
+	void on_pushButton_clicked_begin();
+	void on_pushButton_clicked_end();
 private:
-	Ui::QtWidgetsLocalVideoClass ui;
+	webrtc_demo::DesktopCapture * capturer=nullptr;
 };

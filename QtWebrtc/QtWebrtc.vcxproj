@@ -106,11 +106,9 @@
     <ClCompile Include="localCapturer.cpp" />
     <ClCompile Include="QtWidgetsLocalVideo.cpp" />
     <QtRcc Include="QtWebrtc.qrc" />
-    <QtUic Include="QtWebrtc.ui" />
     <QtMoc Include="QtWebrtc.h" />
     <ClCompile Include="QtWebrtc.cpp" />
     <ClCompile Include="main.cpp" />
-    <QtUic Include="QtWidgetsLocalVideo.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtWidgetsLocalVideo.h" />

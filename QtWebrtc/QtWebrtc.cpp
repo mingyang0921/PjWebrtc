@@ -2,18 +2,14 @@
 
 #include "QtWidgetsLocalVideo.h"
 
-//#undef emit
-//#include "conductor.h"
-//#define emit Q_EMIT
+#include <QPushButton>
+#include <QVBoxLayout>
 
 QtWebrtc::QtWebrtc(QWidget *parent)
     : QWidget(parent)
 {
-    ui.setupUi(this);
-
-    QtWidgetsLocalVideo* local_video = new QtWidgetsLocalVideo();
-    local_video->show();
-    //init_base();
+    resize(400,400);
+    init_base();
 }
 
 QtWebrtc::~QtWebrtc()
@@ -21,18 +17,24 @@ QtWebrtc::~QtWebrtc()
 
 int QtWebrtc::init_base()
 {
-#if 0
-    PeerConnectionClient client;
-    rtc::scoped_refptr<Conductor> conductor(
-        new rtc::RefCountedObject<Conductor>(&client));
+    QVBoxLayout* pVlay = new QVBoxLayout(this);
 
-    if (!conductor->InitializePeerConnection()) {
-        RTC_LOG(LS_ERROR) << "Failed to initialize our PeerConnection instance";
-        //client->SignOut();
-        return 0;
-    }
-    //conductor->peer_connection_->CreateOffer(
-    //    this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
-#endif
+    QPushButton* button_desktop = new QPushButton();
+    button_desktop->setText(u8"ÆÁÄ»Â¼ÖÆ");
+    connect(button_desktop, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_clicked);
+    pVlay->addWidget(button_desktop);
+
+    QPushButton* button_camera = new QPushButton();
+    button_camera->setText(u8"ÉãÏñÍ·");
+    connect(button_camera, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_clicked);
+    pVlay->addWidget(button_camera);
+
     return 0;
 }
+
+void QtWebrtc::on_pushButton_clicked()
+{
+    QtWidgetsLocalVideo* local_video = new QtWidgetsLocalVideo();
+    local_video->show();
+}
+

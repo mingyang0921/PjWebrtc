@@ -8,11 +8,33 @@
 
 #define emit Q_EMIT
 
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+
 QtWidgetsLocalVideo::QtWidgetsLocalVideo(QWidget *parent)
 	: QWidget(parent)
 {
-	ui.setupUi(this);
-	start();
+	capturer = nullptr;
+
+	QVBoxLayout* pVlay = new QVBoxLayout(this);
+	QHBoxLayout* hVlay = new QHBoxLayout();
+
+	QLabel* label = new QLabel();
+	pVlay->addWidget(label);
+
+	QPushButton* buttonBegin = new QPushButton();
+	buttonBegin->setText(u8"¿ªÊ¼");
+	connect(buttonBegin, &QPushButton::clicked, this, &QtWidgetsLocalVideo::on_pushButton_clicked_begin);
+
+	QPushButton* buttonEnd = new QPushButton();
+	buttonEnd->setText(u8"½áÊø");
+	connect(buttonEnd, &QPushButton::clicked, this, &QtWidgetsLocalVideo::on_pushButton_clicked_end);
+
+	hVlay->addWidget(buttonBegin);
+	hVlay->addWidget(buttonEnd);
+	pVlay->addLayout(hVlay);
 }
 
 QtWidgetsLocalVideo::~QtWidgetsLocalVideo()
@@ -20,21 +42,19 @@ QtWidgetsLocalVideo::~QtWidgetsLocalVideo()
 
 }
 
-int QtWidgetsLocalVideo::start()
+void QtWidgetsLocalVideo::on_pushButton_clicked_begin()
 {
-	std::unique_ptr<webrtc_demo::DesktopCapture> capturer(webrtc_demo::DesktopCapture::Createx(15, 0));
+	if (capturer) {
+		capturer->StopCapture();
+		delete capturer;
+		capturer = nullptr;
+	}
+	capturer = webrtc_demo::DesktopCapture::Create(15, 0);
 	capturer->StartCapture();
-
-	//std::unique_ptr<webrtc::test::VideoRenderer> renderer(webrtc::test::VideoRenderer::Create(capturer->GetWindowTitle().c_str(), 720, 480));
-	//capturer->AddOrUpdateSink(renderer.get(), rtc::VideoSinkWants());
-
-	//std::this_thread::sleep_for(std::chrono::seconds(30));
-	//capturer->RemoveSink(renderer.get());
-	return 0;
 }
-
-int QtWidgetsLocalVideo::stop()
+void QtWidgetsLocalVideo::on_pushButton_clicked_end()
 {
-	//capturer->RemoveSink(renderer.get());
-	return 0;
+	if(capturer)
+		capturer->StopCapture();
+	capturer = nullptr;
 }

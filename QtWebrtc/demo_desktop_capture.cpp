@@ -23,7 +23,7 @@ namespace webrtc_demo {
         dc_.reset(nullptr);
     }
 
-    DesktopCapture* DesktopCapture::Createx(size_t target_fps,
+    DesktopCapture* DesktopCapture::Create(size_t target_fps,
         size_t capture_screen_index) {
         std::unique_ptr<DesktopCapture> dc(new DesktopCapture());
         if (!dc->Init(target_fps, capture_screen_index)) {

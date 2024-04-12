@@ -20,7 +20,7 @@ namespace webrtc_demo {
         public webrtc::DesktopCapturer::Callback,
         public rtc::VideoSinkInterface<webrtc::VideoFrame> {
     public:
-        static DesktopCapture* Createx(size_t target_fps, size_t capture_screen_index);
+        static DesktopCapture* Create(size_t target_fps, size_t capture_screen_index);
 
         ~DesktopCapture() override;
 
