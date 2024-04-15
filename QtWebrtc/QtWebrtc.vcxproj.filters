@@ -49,9 +49,15 @@
     <ClCompile Include="demo_desktop_capture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QtWidgetsCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtWidgetsLocalVideo.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QtWidgetsCamera.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

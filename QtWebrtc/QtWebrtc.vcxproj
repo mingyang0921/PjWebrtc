@@ -104,6 +104,7 @@
     <ClCompile Include="demo_desktop_capture.cpp" />
     <ClCompile Include="desktop_capture_source.cpp" />
     <ClCompile Include="localCapturer.cpp" />
+    <ClCompile Include="QtWidgetsCamera.cpp" />
     <ClCompile Include="QtWidgetsLocalVideo.cpp" />
     <QtRcc Include="QtWebrtc.qrc" />
     <QtMoc Include="QtWebrtc.h" />
@@ -117,6 +118,7 @@
     <ClInclude Include="demo_desktop_capture.h" />
     <ClInclude Include="localCapturer.h" />
     <ClInclude Include="desktop_capture_source.h" />
+    <QtMoc Include="QtWidgetsCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

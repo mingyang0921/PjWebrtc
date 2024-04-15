@@ -11,8 +11,8 @@ public:
     ~QtWebrtc();
 
 private slots:
-    void on_pushButton_clicked();
-
+    void on_pushButton_desktop_clicked();
+    void on_pushButton_camera_clicked();
 public:
     int init_base();
 };

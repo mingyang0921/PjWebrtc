@@ -62,7 +62,7 @@ namespace webrtc_demo {
     void DesktopCapture::OnCaptureResult(
         webrtc::DesktopCapturer::Result result,
         std::unique_ptr<webrtc::DesktopFrame> frame) {
-        RTC_LOG(LS_INFO) << "new Frame";
+        //RTC_LOG(LS_INFO) << "new Frame";
 
         static auto timestamp =
             std::chrono::duration_cast<std::chrono::milliseconds>(
