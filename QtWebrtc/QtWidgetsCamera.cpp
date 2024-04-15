@@ -29,7 +29,7 @@ void QtWidgetsCamera::init()
     QLabel* label;
     QVBoxLayout* verticalLayout;
     QSpacerItem* verticalSpacer;
-    QComboBox* comboBox;
+
     QPushButton* pushButton;
     QSpacerItem* verticalSpacer_2;
     //horizontalLayoutWidget->setGeometry(QRect(10, 0, 771, 601));
@@ -59,6 +59,8 @@ void QtWidgetsCamera::init()
     pushButton = new QPushButton(this);
     pushButton->setObjectName(QString::fromUtf8("pushButton"));
     pushButton->setMaximumSize(QSize(100, 16777215));
+
+    connect(pushButton, &QPushButton::clicked, this, &QtWidgetsCamera::on_pushButton_clicked);
 
     verticalLayout->addWidget(pushButton);
 
@@ -90,4 +92,70 @@ void QtWidgetsCamera::init()
         pushButton->setEnabled(false);
     }
 
+}
+
+//处理点击事件，打开或关闭摄像头
+void QtWidgetsCamera::on_pushButton_clicked()
+{
+#if 0
+    static bool flag = true;
+    if (flag)
+    {
+
+        webrtc::VideoCaptureModule::DeviceInfo
+            * device_info_ = webrtc::VideoCaptureFactory::CreateDeviceInfo();
+
+        char device_name[256];
+        char unique_name[256];
+
+        if (device_info_->GetDeviceName(comboBox->currentIndex(), device_name, 256,
+            unique_name, 256) != 0)
+        {
+            qDebug() << "info->GetDeviceName error";
+            return;
+        }
+
+        m_module =
+            webrtc::VideoCaptureFactory::Create(unique_name);
+        if (m_module.get() == NULL)
+        {
+            qDebug() << "webrtc::VideoCaptureFactory::Create error";
+            return;
+        }
+
+        m_module->RegisterCaptureDataCallback(&m_captureObserver);
+
+        device_info_->GetCapability(m_module->CurrentDeviceName(), 0, m_capability);
+
+
+        //开始捕捉
+        if (m_module->StartCapture(m_capability) != 0)
+        {
+            qDebug() << "m_module->StartCapture failed";
+            return;
+        }
+
+
+        if (m_module->CaptureStarted())
+        {
+            qDebug() << "Capture is running";
+        }
+
+        m_timer.start(40);
+        ui->pushButton->setText(tr("关闭"));
+    }
+    else
+    {
+        ui->pushButton->setText(tr("打开"));
+        m_timer.stop();
+        //重复连接会报错，需要先断开，才能再次连接
+        m_module->StopCapture();
+        if (!m_module->CaptureStarted())
+        {
+            qDebug() << "Capture is stoped";
+        }
+        ui->label->clear();
+    }
+    flag = !flag;
+#endif
 }
