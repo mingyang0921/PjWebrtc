@@ -2,6 +2,7 @@
 
 #include "QtWidgetsLocalVideo.h"
 #include "QtWidgetsCamera.h"
+#include "QtWidgetsSdp.h"
 
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -21,14 +22,19 @@ int QtWebrtc::init_base()
     QVBoxLayout* pVlay = new QVBoxLayout(this);
 
     QPushButton* button_desktop = new QPushButton();
-    button_desktop->setText(u8"ÆÁÄ»Â¼ÖÆ");
+    button_desktop->setText(u8"ÆÁÄ»ÏÔÊ¾");
     connect(button_desktop, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_desktop_clicked);
     pVlay->addWidget(button_desktop);
 
     QPushButton* button_camera = new QPushButton();
-    button_camera->setText(u8"ÉãÏñÍ·");
+    button_camera->setText(u8"ÉãÏñÍ·ÏÔÊ¾");
     connect(button_camera, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_camera_clicked);
     pVlay->addWidget(button_camera);
+
+    QPushButton* button_sdp = new QPushButton();
+    button_sdp->setText(u8"»ñÈ¡sdp");
+    connect(button_sdp, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_sdp_clicked);
+    pVlay->addWidget(button_sdp);
 
     return 0;
 }
@@ -43,4 +49,10 @@ void QtWebrtc::on_pushButton_camera_clicked()
 {
     QtWidgetsCamera* local_camera = new QtWidgetsCamera();
     local_camera->show();
+}
+
+void QtWebrtc::on_pushButton_sdp_clicked()
+{
+    QtWidgetsSdp* local_sdp = new QtWidgetsSdp();
+    local_sdp->show();
 }

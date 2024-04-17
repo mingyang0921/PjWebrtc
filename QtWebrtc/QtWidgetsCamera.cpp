@@ -13,6 +13,8 @@
 #include <QComboBox>
 #include <QLabel>
 
+#include "demo_camera_capture.h"
+
 QtWidgetsCamera::QtWidgetsCamera(QWidget *parent)
 	: QWidget(parent)
 {
@@ -97,6 +99,14 @@ void QtWidgetsCamera::init()
 //处理点击事件，打开或关闭摄像头
 void QtWidgetsCamera::on_pushButton_clicked()
 {
+    const size_t kWidth = 1080;
+    const size_t kHeight = 720;
+    const size_t kFps = 30;
+
+    std::unique_ptr<webrtc_demo::VcmCapturerTest> capturer;
+    webrtc_demo::VcmCapturerTest::Create(kWidth, kHeight, kFps, 2);
+
+
 #if 0
     static bool flag = true;
     if (flag)

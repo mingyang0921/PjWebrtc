@@ -83,7 +83,7 @@ class CapturerTrackSource : public webrtc::VideoTrackSource {
       return nullptr;
     }
     int num_devices = info->NumberOfDevices();
-    for (int i = 0; i < num_devices; ++i) {
+    for (int i = 1; i < num_devices; ++i) {
       capturer = absl::WrapUnique(
           webrtc::test::VcmCapturer::Create(kWidth, kHeight, kFps, i));
       if (capturer) {
@@ -448,13 +448,13 @@ void Conductor::AddTracks() {
                       << result_or_error.error().message();
   }
 
-  //rtc::scoped_refptr<CapturerTrackSource> video_device =
- ///     CapturerTrackSource::Create();
+  rtc::scoped_refptr<CapturerTrackSource> video_device =
+      CapturerTrackSource::Create();
 
-  rtc::scoped_refptr<MyCapturer> video_device = new rtc::RefCountedObject<MyCapturer>();
+  //rtc::scoped_refptr<MyCapturer> video_device = new rtc::RefCountedObject<MyCapturer>();
 
   if (video_device) {
-      video_device->startCapturer();
+      //video_device->startCapturer();
     rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
         peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
     main_wnd_->StartLocalRenderer(video_track_);

@@ -101,11 +101,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="conductor.cpp" />
+    <ClCompile Include="demo_camera_capture.cpp" />
     <ClCompile Include="demo_desktop_capture.cpp" />
     <ClCompile Include="desktop_capture_source.cpp" />
     <ClCompile Include="localCapturer.cpp" />
     <ClCompile Include="QtWidgetsCamera.cpp" />
     <ClCompile Include="QtWidgetsLocalVideo.cpp" />
+    <ClCompile Include="QtWidgetsSdp.cpp" />
     <QtRcc Include="QtWebrtc.qrc" />
     <QtMoc Include="QtWebrtc.h" />
     <ClCompile Include="QtWebrtc.cpp" />
@@ -115,9 +118,13 @@
     <QtMoc Include="QtWidgetsLocalVideo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="conductor.h" />
+    <ClInclude Include="demo_camera_capture.h" />
     <ClInclude Include="demo_desktop_capture.h" />
     <ClInclude Include="localCapturer.h" />
     <ClInclude Include="desktop_capture_source.h" />
+    <ClInclude Include="PeerConnectionCallback.h" />
+    <QtMoc Include="QtWidgetsSdp.h" />
     <QtMoc Include="QtWidgetsCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
