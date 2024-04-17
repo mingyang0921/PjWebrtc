@@ -112,6 +112,7 @@ private:
 QtWidgetsSdp::QtWidgetsSdp(QWidget *parent)
 	: QWidget(parent)
 {
+    conductor = new rtc::RefCountedObject<ConductorCallback>();
 	init();
     initUi();
 }
@@ -184,7 +185,7 @@ void QtWidgetsSdp::init()
     server.uri = addr;
     config.servers.push_back(server);
 
-    conductor = new rtc::RefCountedObject<ConductorCallback>();
+    //conductor = new rtc::RefCountedObject<ConductorCallback>();
     //conductor = new ConductorCallback();
 
     peer_connection_ = peer_connection_factory_->CreatePeerConnection(
@@ -225,7 +226,7 @@ void QtWidgetsSdp::init()
         conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
 
     //QThread::sleep(3);
-    std::string uisdp = conductor->sdpGet();
+    //std::string uisdp = conductor->sdpGet();
 }
 
 void QtWidgetsSdp::on_pushButton_clicked()
