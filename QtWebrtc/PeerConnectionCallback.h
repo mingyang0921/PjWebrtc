@@ -49,17 +49,26 @@ public:
 public:
     // CreateSessionDescriptionObserver implementation.
     void OnSuccess(webrtc::SessionDescriptionInterface* desc) override {
-        printf("xxxxxxxxxxxxxxxxxxxxxxx\n");
         std::string sdp;
         desc->ToString(&sdp);
+        mysdp = sdp;
+        times++;
     }
     void OnFailure(webrtc::RTCError error) override {
         printf("yyyyyyyyyyyyyyyyyyy\n");
     }
 
 public:
-    void Release() {}
-    void AddRef() {}
+    std::string sdpGet() {
+        return mysdp;
+    }
+
+public:
+    //void Release() {}
+    //void AddRef() {}
+private:
+    std::string mysdp;
+    int times=0;
 };
 
 #endif  // EXAMPLES_PEERCONNECTION_CLIENT_CALLBACK_H_

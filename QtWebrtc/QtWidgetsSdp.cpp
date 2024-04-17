@@ -44,6 +44,14 @@
 
 #define emit Q_EMIT
 
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QTextEdit>
+#include <QVBoxLayout>
+#include <QString>
+#include <QThread>
+
 const char kAudioLabel[] = "audio_label";
 const char kVideoLabel[] = "video_label";
 const char kStreamId[] = "stream_id";
@@ -105,6 +113,7 @@ QtWidgetsSdp::QtWidgetsSdp(QWidget *parent)
 	: QWidget(parent)
 {
 	init();
+    initUi();
 }
 
 QtWidgetsSdp::~QtWidgetsSdp()
@@ -112,15 +121,51 @@ QtWidgetsSdp::~QtWidgetsSdp()
 
 }
 
+void QtWidgetsSdp::initUi()
+{
+    QHBoxLayout* horizontalLayout;
+    QVBoxLayout* verticalLayout;
+    QSpacerItem* verticalSpacer;
+    QPushButton* pushButton;
+    QSpacerItem* verticalSpacer_2;
+
+    this->resize(816, 600);
+
+    horizontalLayout = new QHBoxLayout(this);
+    horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+    horizontalLayout->setContentsMargins(0, 0, 0, 0);
+
+    textEdit = new QTextEdit();
+    textEdit->setObjectName(QString::fromUtf8("textEdit"));
+
+    horizontalLayout->addWidget(textEdit);
+
+    verticalLayout = new QVBoxLayout();
+    verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+    verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    verticalLayout->addItem(verticalSpacer);
+
+    pushButton = new QPushButton();
+    pushButton->setObjectName(QString::fromUtf8("pushButton"));
+    pushButton->setText(u8"ÏÔÊ¾SDP");
+    verticalLayout->addWidget(pushButton);
+
+    verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    verticalLayout->addItem(verticalSpacer_2);
+    horizontalLayout->addLayout(verticalLayout); 
+
+    connect(pushButton, &QPushButton::clicked, this, &QtWidgetsSdp::on_pushButton_clicked);
+}
+
+
 void QtWidgetsSdp::init()
 {
     //Conductor* conductor = new Conductor();
-
-    conductornew = new rtc::RefCountedObject<Conductor>();
-
-    conductornew->ConnectToPeer(0);
-
-    return;
+    //conductornew = new rtc::RefCountedObject<Conductor>();
+    //conductornew->ConnectToPeer(0);
+    //return;
 
     peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
         nullptr /* network_thread */, nullptr /* worker_thread */,
@@ -140,6 +185,7 @@ void QtWidgetsSdp::init()
     config.servers.push_back(server);
 
     conductor = new rtc::RefCountedObject<ConductorCallback>();
+    //conductor = new ConductorCallback();
 
     peer_connection_ = peer_connection_factory_->CreatePeerConnection(
         config, nullptr, nullptr, conductor);
@@ -178,4 +224,16 @@ void QtWidgetsSdp::init()
     peer_connection_->CreateOffer(
         conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
 
+    //QThread::sleep(3);
+    std::string uisdp = conductor->sdpGet();
+}
+
+void QtWidgetsSdp::on_pushButton_clicked()
+{
+    std::string uisdp = conductor->sdpGet();
+
+    QString qstr;
+    qstr = QString::fromStdString(uisdp);
+
+    textEdit->setText(qstr);
 }
