@@ -10,10 +10,131 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
+#undef emit
+#include "PeerConnectionCallback.h"
+#include "absl/memory/memory.h"
+#include "absl/types/optional.h"
+#include "api/audio/audio_mixer.h"
+#include "api/audio_codecs/audio_decoder_factory.h"
+#include "api/audio_codecs/audio_encoder_factory.h"
+#include "api/audio_codecs/builtin_audio_decoder_factory.h"
+#include "api/audio_codecs/builtin_audio_encoder_factory.h"
+#include "api/audio_options.h"
+#include "api/create_peerconnection_factory.h"
+#include "api/rtp_sender_interface.h"
+#include "api/video_codecs/builtin_video_decoder_factory.h"
+#include "api/video_codecs/builtin_video_encoder_factory.h"
+#include "api/video_codecs/video_decoder_factory.h"
+#include "api/video_codecs/video_encoder_factory.h"
+#include "modules/audio_device/include/audio_device.h"
+#include "modules/audio_processing/include/audio_processing.h"
+#include "modules/video_capture/video_capture.h"
+#include "modules/video_capture/video_capture_factory.h"
+#include "p2p/base/port_allocator.h"
+#include "pc/video_track_source.h"
+#include "rtc_base/checks.h"
+#include "rtc_base/logging.h"
+#include "rtc_base/ref_counted_object.h"
+#include "rtc_base/rtc_certificate_generator.h"
+#include "rtc_base/strings/json.h"
+#include "test/vcm_capturer.h"
+#include "absl/flags/parse.h"
+#include "rtc_base/checks.h"
+#include "rtc_base/constructor_magic.h"
+#include "rtc_base/ssl_adapter.h"
+#include "rtc_base/string_utils.h"  // For ToUtf8
+#include "rtc_base/win32_socket_init.h"
+#include "rtc_base/win32_socket_server.h"
+#include "system_wrappers/include/field_trial.h"
+#include "test/field_trial.h"
+#include "api/video/video_frame.h"
+#include "api/video/video_sink_interface.h"
+#define emit Q_EMIT
+
+#include "demo_camera_capture.h"
+#include "localCapturer.h"
+
+const char kAudioLabel[] = "audio_label";
+const char kVideoLabel[] = "video_label";
+const char kStreamId[] = "stream_id";
+const uint16_t kDefaultServerPort = 8888;
+
+
+class CapturerTrackSource : public webrtc::VideoTrackSource,
+    public rtc::VideoSinkInterface<webrtc::VideoFrame>
+{
+public:
+    static rtc::scoped_refptr<CapturerTrackSource> Create(int id) {
+        const size_t kWidth = 1920;
+        const size_t kHeight = 1080;
+        const size_t kFps = 30;
+        std::unique_ptr<webrtc::test::VcmCapturer> capturer;
+        std::unique_ptr<webrtc::VideoCaptureModule::DeviceInfo> info(
+            webrtc::VideoCaptureFactory::CreateDeviceInfo());
+        if (!info) {
+            return nullptr;
+        }
+        int num_devices = info->NumberOfDevices();
+
+        if (id >= num_devices) return nullptr;
+
+        capturer = absl::WrapUnique(
+            webrtc::test::VcmCapturer::Create(kWidth, kHeight, kFps, id));
+        if (capturer) {
+            return new rtc::RefCountedObject<CapturerTrackSource>(
+                std::move(capturer));
+        }
+
+        return nullptr;
+
+        int i = 0;
+        for (i = 0; i < num_devices; ++i)
+        {
+            const uint32_t kSize = 256;
+            char name[kSize] = { 0 };
+            char id[kSize] = { 0 };
+            if (info->GetDeviceName(i, name, kSize, id, kSize) != -1)
+            {
+                printf("%s\n", name);
+            }
+        }
+
+        for (i = 1; i < num_devices; ++i) {
+            //capturer = webrtc_demo::VcmCapturerTest::Create(kWidth, kHeight, kFps, 2);
+            capturer = absl::WrapUnique(
+                webrtc::test::VcmCapturer::Create(kWidth, kHeight, kFps, i));
+            if (capturer) {
+                return new rtc::RefCountedObject<CapturerTrackSource>(
+                    std::move(capturer));
+            }
+        }
+
+        return nullptr;
+    }
+
+protected:
+    explicit CapturerTrackSource(
+        std::unique_ptr<webrtc::test::VcmCapturer> capturer)
+        : VideoTrackSource(/*remote=*/false), capturer_(std::move(capturer)) {}
+
+private:
+    rtc::VideoSourceInterface<webrtc::VideoFrame>* source() override {
+        return capturer_.get();
+    }
+    std::unique_ptr<webrtc::test::VcmCapturer> capturer_;
+public:
+    void OnFrame(const webrtc::VideoFrame& frame) override {
+        RTC_LOG(LS_INFO) << "OnFrame";
+    }
+};
+
+
 QtWidgetsTest::QtWidgetsTest(QWidget *parent)
 	: QWidget(parent)
 {
+    conductor = new rtc::RefCountedObject<ConductorCallback>();
     initUI();
+    checkCamera();
 }
 
 QtWidgetsTest::~QtWidgetsTest()
@@ -28,7 +149,6 @@ void QtWidgetsTest::initUI()
     QHBoxLayout* horizontalLayout_local_camera_switch;
     QSpacerItem* horizontalSpacer_local_camera_left;
     QLabel* label_local_camera_info;
-    QComboBox* comboBox_cocal_camera_check;
     QPushButton* pushButton_local_camera_makesure;
     QSpacerItem* horizontalSpacer_local_camera_right;
     QLabel* label_local_camera_show;
@@ -37,9 +157,9 @@ void QtWidgetsTest::initUI()
     QSpacerItem* horizontalSpacer_local_sdp_title_left;
     QLabel* label_local_sdp_title_info;
     QSpacerItem* horizontalSpacer_local_sdp_title_right;
-    QTextEdit* textEdit_local_sdp_text;
     QVBoxLayout* verticalLayout_local_button;
     QSpacerItem* verticalSpacer_local_button_up;
+    QPushButton* pushButton_local_button_showsdp;
     QPushButton* pushButton_local_button_press;
     QSpacerItem* verticalSpacer_local_button_down;
     QFrame* line;
@@ -55,7 +175,6 @@ void QtWidgetsTest::initUI()
     QSpacerItem* horizontalSpacer_remote_sdp_left;
     QLabel* label_remote_sdp_info;
     QSpacerItem* horizontalSpacer_remote_sdp_right;
-    QTextEdit* textEdit_remote_sdp_text;
     QVBoxLayout* verticalLayout_remote_button;
     QSpacerItem* verticalSpacer_remote_button_up;
     QPushButton* pushButton_remote_button_press;
@@ -146,6 +265,10 @@ void QtWidgetsTest::initUI()
     pushButton_local_button_press->setObjectName(QString::fromUtf8("pushButton_local_button_press"));
 
     verticalLayout_local_button->addWidget(pushButton_local_button_press);
+
+    pushButton_local_button_showsdp = new QPushButton();
+    pushButton_local_button_showsdp->setObjectName(QString::fromUtf8("pushButton_local_button_showsdp"));
+    verticalLayout_local_button->addWidget(pushButton_local_button_showsdp);
 
     verticalSpacer_local_button_down = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -249,9 +372,194 @@ void QtWidgetsTest::initUI()
     label_local_camera_show->setText(QApplication::translate("Widget", "TextLabel", nullptr));
     label_local_sdp_title_info->setText(QApplication::translate("Widget", "\346\234\254\345\234\260SDP", nullptr));
     pushButton_local_button_press->setText(QApplication::translate("Widget", "\345\220\257\345\212\250", nullptr));
+    pushButton_local_button_showsdp->setText(QApplication::translate("Widget", u8"ÏÔÊ¾SDP", nullptr));
     label_remote_camera_title_info->setText(QApplication::translate("Widget", "\345\257\271\347\253\257\345\252\222\344\275\223", nullptr));
     label_remote_camera_show->setText(QApplication::translate("Widget", "TextLabel", nullptr));
     label_remote_sdp_info->setText(QApplication::translate("Widget", "\345\257\271\347\253\257SDP", nullptr));
     pushButton_remote_button_press->setText(QApplication::translate("Widget", "\350\277\236\346\216\245", nullptr));
 
+
+    connect(pushButton_local_camera_makesure, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_makesure_clicked);
+    connect(pushButton_local_button_press, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_start_localcamera_clicked);
+    connect(pushButton_local_button_showsdp, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_showsdp_localcamera_clicked);
+}
+
+void QtWidgetsTest::checkCamera()
+{
+    webrtc::VideoCaptureModule::DeviceInfo
+        * device = webrtc::VideoCaptureFactory::CreateDeviceInfo();
+    int deviceNum = device->NumberOfDevices();
+    comboBox_cocal_camera_check_num_max = deviceNum;
+    for (int i = 0; i < deviceNum; ++i)
+    {
+        const uint32_t kSize = 256;
+        char name[kSize] = { 0 };
+        char id[kSize] = { 0 };
+        if (device->GetDeviceName(i, name, kSize, id, kSize) != -1)
+        {
+            //qDebug() << "name" << QString(name) << "id" << QString(id);
+            comboBox_cocal_camera_check->addItem(QString(name));
+
+        }
+    }
+    comboBox_cocal_camera_check->addItem(QString("desktop"));
+    //comboBox_cocal_camera_check->currentIndex()
+}
+
+void QtWidgetsTest::on_pushButton_makesure_clicked()
+{
+    comboBox_cocal_camera_check_num = comboBox_cocal_camera_check->currentIndex();    
+    comboBox_cocal_camera_check->setEnabled(false);
+}
+
+void QtWidgetsTest::on_pushButton_start_localcamera_clicked()
+{
+    webrtc_init();
+}
+
+void QtWidgetsTest::on_pushButton_showsdp_localcamera_clicked()
+{
+    std::string uisdp = conductor->sdpGet();
+
+    QString qstr;
+    qstr = QString::fromStdString(uisdp);
+
+    textEdit_local_sdp_text->setText(qstr);
+}
+
+bool QtWidgetsTest::if_check_desktop()
+{
+    if (comboBox_cocal_camera_check_num == comboBox_cocal_camera_check_num_max) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void QtWidgetsTest::webrtc_init()
+{
+
+    peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
+        nullptr /* network_thread */, nullptr /* worker_thread */,
+        nullptr /* signaling_thread */, nullptr /* default_adm */,
+        webrtc::CreateBuiltinAudioEncoderFactory(),
+        webrtc::CreateBuiltinAudioDecoderFactory(),
+        webrtc::CreateBuiltinVideoEncoderFactory(),
+        webrtc::CreateBuiltinVideoDecoderFactory(), nullptr /* audio_mixer */,
+        nullptr /* audio_processing */);
+
+    webrtc::PeerConnectionInterface::RTCConfiguration config;
+    config.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
+    config.enable_dtls_srtp = true;
+    webrtc::PeerConnectionInterface::IceServer server;
+    std::string addr = "stun:stun.l.google.com:19302";
+    server.uri = addr;
+    config.servers.push_back(server);
+
+    peer_connection_ = peer_connection_factory_->CreatePeerConnection(
+        config, nullptr, nullptr, conductor);
+
+    rtc::scoped_refptr<webrtc::AudioTrackInterface> audio_track(
+        peer_connection_factory_->CreateAudioTrack(
+            kAudioLabel, peer_connection_factory_->CreateAudioSource(
+                cricket::AudioOptions())));
+
+    auto result_or_error = peer_connection_->AddTrack(audio_track, { kStreamId });
+    if (!result_or_error.ok()) {
+        RTC_LOG(LS_ERROR) << "Failed to add audio track to PeerConnection: "
+            << result_or_error.error().message();
+    }
+
+    if (if_check_desktop()) {
+        rtc::scoped_refptr<localCapturer> video_device = new rtc::RefCountedObject<localCapturer>();
+        video_device->startCapturer();
+        rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
+            peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
+
+        result_or_error = peer_connection_->AddTrack(video_track_, { kStreamId });
+        if (!result_or_error.ok()) {
+            RTC_LOG(LS_ERROR) << "Failed to add video track to PeerConnection: "
+                << result_or_error.error().message();
+        }
+    }
+    else {
+        rtc::scoped_refptr<CapturerTrackSource> video_device = 
+            CapturerTrackSource::Create(comboBox_cocal_camera_check_num);
+
+        //const size_t kWidth = 1080;
+        //const size_t kHeight = 720;
+        //const size_t kFps = 30;
+        //std::unique_ptr<webrtc_demo::VcmCapturerTest> video_device = webrtc_demo::VcmCapturerTest::Create(kWidth, kHeight, kFps, comboBox_cocal_camera_check_num);
+
+        rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
+            peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
+        BaseVideoSubscriber* videoSub = nullptr;
+        videoSub = new BaseVideoSubscriber();
+        videoSub->setUi(this);
+
+        video_track_->AddOrUpdateSink(videoSub, rtc::VideoSinkWants());
+
+        result_or_error = peer_connection_->AddTrack(video_track_, { kStreamId });
+        if (!result_or_error.ok()) {
+            RTC_LOG(LS_ERROR) << "Failed to add video track to PeerConnection: "
+                << result_or_error.error().message();
+        }
+    }
+
+    peer_connection_->CreateOffer(
+        conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+
+}
+
+void BaseVideoSubscriber::OnFrame(const webrtc::VideoFrame& frame)
+{
+    RTC_LOG(LS_INFO) << "VideoSubscriber::OnFrame=" << frame.video_frame_buffer()->type();
+#if 0
+    int height = frame.height();
+    int width = frame.width();
+
+    RTC_LOG(LS_INFO) << "VideoSubscriber::heigth=" << height << "  width=" << width;
+
+    rtc::scoped_refptr<webrtc::I420BufferInterface> i420_buffer = frame.video_frame_buffer()->ToI420();
+
+    QImage::Format imageFormat = QImage::Format_Invalid;
+    const int length = frame.width() * frame.height() * 3;
+    RTC_LOG(LS_INFO) << "VideoSubscriber::length=" << length;
+
+    uchar* imageBuffer = new uchar[length];
+
+    if (frame.video_frame_buffer()->type() == webrtc::VideoFrameBuffer::Type::kI420) {
+
+        libyuv::I420ToRGB24(
+            i420_buffer->DataY(),
+            i420_buffer->StrideY(),
+            i420_buffer->DataU(),
+            i420_buffer->StrideU(),
+            i420_buffer->DataV(),
+            i420_buffer->StrideV(),
+            imageBuffer,
+            frame.width() * 3,
+            frame.width(),
+            frame.height()
+        );
+
+        QImage image(imageBuffer, frame.width(), frame.height(), QImage::Format::Format_RGB888);
+
+        QTransform transform;
+        transform.scale(0.5, 0.5);
+        image = image.transformed(transform);
+
+        QPixmap pixmap = QPixmap::fromImage(image);
+
+        ui->label->setPixmap(pixmap);
+        ui->label->show();
+
+    }
+#endif
+}
+
+void BaseVideoSubscriber::setUi(QtWidgetsTest* widget)
+{
+    ui = widget;
 }

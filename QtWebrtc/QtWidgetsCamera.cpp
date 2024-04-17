@@ -103,9 +103,13 @@ void QtWidgetsCamera::on_pushButton_clicked()
     const size_t kHeight = 720;
     const size_t kFps = 30;
 
-    std::unique_ptr<webrtc_demo::VcmCapturerTest> capturer;
-    webrtc_demo::VcmCapturerTest::Create(kWidth, kHeight, kFps, 2);
+    //std::unique_ptr<webrtc_demo::VcmCapturerTest> capturer =  
 
+        webrtc_demo::VcmCapturerTest * capturer =
+        webrtc_demo::VcmCapturerTest::Create(kWidth, kHeight, kFps, 2);
+
+    //rtc::scoped_refptr<webrtc_demo::VcmCapturerTest> capturer = 
+    //    new rtc::RefCountedObject<localCapturer>();
 
 #if 0
     static bool flag = true;
