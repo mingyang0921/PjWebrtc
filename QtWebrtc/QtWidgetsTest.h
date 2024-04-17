@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <QTextEdit>
-
+#include <QLabel>
 #undef emit
 #include "api/media_stream_interface.h"
 #include "api/peer_connection_interface.h"
@@ -16,9 +16,10 @@ class QtWidgetsTest;
 class BaseVideoSubscriber : public rtc::VideoBroadcaster {
 public:
 	void OnFrame(const webrtc::VideoFrame& frame) override;
-	void setUi(QtWidgetsTest* widget);
+	void setUi(QtWidgetsTest* widget,bool is_local);
 public:
 	QtWidgetsTest* ui;
+	bool ui_is_local;
 };
 
 
@@ -50,6 +51,9 @@ private:
 	QComboBox* comboBox_cocal_camera_check;
 	QTextEdit* textEdit_local_sdp_text;
 	QTextEdit* textEdit_remote_sdp_text;
+public:
+	QLabel* label_local_camera_show;
+	QLabel* label_remote_camera_show;
 private:
 	rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface>peer_connection_factory_;
 	rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection_;

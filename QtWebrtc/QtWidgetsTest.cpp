@@ -49,6 +49,12 @@
 #include "test/field_trial.h"
 #include "api/video/video_frame.h"
 #include "api/video/video_sink_interface.h"
+#include "test/video_renderer.h"
+#include "rtc_base/logging.h"
+#include <thread>
+#include "third_party/libyuv/include/libyuv.h"
+#include "api/video/i420_buffer.h"
+#include "api/video/video_frame.h"
 #define emit Q_EMIT
 
 #include "demo_camera_capture.h"
@@ -151,7 +157,6 @@ void QtWidgetsTest::initUI()
     QLabel* label_local_camera_info;
     QPushButton* pushButton_local_camera_makesure;
     QSpacerItem* horizontalSpacer_local_camera_right;
-    QLabel* label_local_camera_show;
     QVBoxLayout* verticalLayout_local_sdp;
     QHBoxLayout* horizontalLayout_local_sdp_title;
     QSpacerItem* horizontalSpacer_local_sdp_title_left;
@@ -169,7 +174,6 @@ void QtWidgetsTest::initUI()
     QSpacerItem* horizontalSpacer_remote_camera_title_left;
     QLabel* label_remote_camera_title_info;
     QSpacerItem* horizontalSpacer_remote_camera_title_right;
-    QLabel* label_remote_camera_show;
     QVBoxLayout* verticalLayout_remote_sdp;
     QHBoxLayout* horizontalLayout_remote_sdp;
     QSpacerItem* horizontalSpacer_remote_sdp_left;
@@ -496,7 +500,7 @@ void QtWidgetsTest::webrtc_init()
             peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
         BaseVideoSubscriber* videoSub = nullptr;
         videoSub = new BaseVideoSubscriber();
-        videoSub->setUi(this);
+        videoSub->setUi(this,true);
 
         video_track_->AddOrUpdateSink(videoSub, rtc::VideoSinkWants());
 
@@ -515,7 +519,7 @@ void QtWidgetsTest::webrtc_init()
 void BaseVideoSubscriber::OnFrame(const webrtc::VideoFrame& frame)
 {
     RTC_LOG(LS_INFO) << "VideoSubscriber::OnFrame=" << frame.video_frame_buffer()->type();
-#if 0
+#if 1
     int height = frame.height();
     int width = frame.width();
 
@@ -552,14 +556,19 @@ void BaseVideoSubscriber::OnFrame(const webrtc::VideoFrame& frame)
 
         QPixmap pixmap = QPixmap::fromImage(image);
 
-        ui->label->setPixmap(pixmap);
-        ui->label->show();
-
+        if (ui_is_local) {
+            ui->label_local_camera_show->setPixmap(pixmap);
+            ui->label_local_camera_show->show();
+        }else{
+            ui->label_remote_camera_show->setPixmap(pixmap);
+            ui->label_remote_camera_show->show();
+        }
     }
 #endif
 }
 
-void BaseVideoSubscriber::setUi(QtWidgetsTest* widget)
+void BaseVideoSubscriber::setUi(QtWidgetsTest* widget, bool is_local)
 {
     ui = widget;
+    ui_is_local = is_local;
 }
