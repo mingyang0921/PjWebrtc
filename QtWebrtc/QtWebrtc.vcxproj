@@ -109,6 +109,7 @@
     <ClCompile Include="QtWidgetsCamera.cpp" />
     <ClCompile Include="QtWidgetsLocalVideo.cpp" />
     <ClCompile Include="QtWidgetsSdp.cpp" />
+    <ClCompile Include="QtWidgetsTest.cpp" />
     <QtRcc Include="QtWebrtc.qrc" />
     <QtMoc Include="QtWebrtc.h" />
     <ClCompile Include="QtWebrtc.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="localCapturer.h" />
     <ClInclude Include="desktop_capture_source.h" />
     <ClInclude Include="PeerConnectionCallback.h" />
+    <QtMoc Include="QtWidgetsTest.h" />
     <QtMoc Include="QtWidgetsSdp.h" />
     <QtMoc Include="QtWidgetsCamera.h" />
   </ItemGroup>

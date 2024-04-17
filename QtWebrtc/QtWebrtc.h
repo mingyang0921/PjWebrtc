@@ -14,6 +14,7 @@ private slots:
     void on_pushButton_desktop_clicked();
     void on_pushButton_camera_clicked();
     void on_pushButton_sdp_clicked();
+    void on_pushButton_test_clicked();
 public:
     int init_base();
 };

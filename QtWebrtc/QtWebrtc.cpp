@@ -3,6 +3,7 @@
 #include "QtWidgetsLocalVideo.h"
 #include "QtWidgetsCamera.h"
 #include "QtWidgetsSdp.h"
+#include "QtWidgetsTest.h"
 
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -36,6 +37,11 @@ int QtWebrtc::init_base()
     connect(button_sdp, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_sdp_clicked);
     pVlay->addWidget(button_sdp);
 
+    QPushButton* button_connect = new QPushButton();
+    button_connect->setText(u8"Á¬½Ó²âÊÔ");
+    connect(button_connect, &QPushButton::clicked, this, &QtWebrtc::on_pushButton_test_clicked);
+    pVlay->addWidget(button_connect);
+
     return 0;
 }
 
@@ -55,4 +61,10 @@ void QtWebrtc::on_pushButton_sdp_clicked()
 {
     QtWidgetsSdp* local_sdp = new QtWidgetsSdp();
     local_sdp->show();
+}
+
+void QtWebrtc::on_pushButton_test_clicked()
+{
+    QtWidgetsTest* connect_test = new QtWidgetsTest();
+    connect_test->show();
 }

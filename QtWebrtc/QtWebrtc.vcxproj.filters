@@ -61,6 +61,9 @@
     <ClCompile Include="conductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QtWidgetsTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtWidgetsLocalVideo.h">
@@ -70,6 +73,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QtWidgetsSdp.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QtWidgetsTest.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
