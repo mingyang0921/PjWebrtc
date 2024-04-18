@@ -38,11 +38,14 @@ private slots:
 	void on_pushButton_makesure_clicked();
 	void on_pushButton_start_localcamera_clicked();
 	void on_pushButton_showsdp_localcamera_clicked();
+	void on_pushButton_showcandidate_localcamera_clicked();
+	void on_pushButton_local_remote_connect_clicked();
 private:
 	void initUI();
 	void checkCamera();
 	void webrtc_init();
-
+	void connect_sdp_load();
+	void connect_candidate_load();
 private:
 	int comboBox_cocal_camera_check_num_max = 0;
 	int comboBox_cocal_camera_check_num=0;
@@ -51,6 +54,8 @@ private:
 	QComboBox* comboBox_cocal_camera_check;
 	QTextEdit* textEdit_local_sdp_text;
 	QTextEdit* textEdit_remote_sdp_text;
+	QTextEdit* textEdit_local_candidate_text;
+	QTextEdit* textEdit_remote_candidate_text;
 public:
 	QLabel* label_local_camera_show;
 	QLabel* label_remote_camera_show;

@@ -290,6 +290,9 @@ void Conductor::OnMessageFromPeer(int peer_id, const std::string& message) {
   RTC_DCHECK(peer_id_ == peer_id || peer_id_ == -1);
   RTC_DCHECK(!message.empty());
 
+  RTC_LOG(WARNING)
+      <<  message;
+
   if (!peer_connection_.get()) {
     RTC_DCHECK(peer_id_ == -1);
     peer_id_ = peer_id;
@@ -581,5 +584,9 @@ void Conductor::OnFailure(webrtc::RTCError error) {
 
 void Conductor::SendMessage(const std::string& json_object) {
   std::string* msg = new std::string(json_object);
+
+  RTC_LOG(WARNING)
+      << json_object;
+
   main_wnd_->QueueUIThreadCallback(SEND_MESSAGE_TO_PEER, msg);
 }

@@ -165,6 +165,7 @@ void QtWidgetsTest::initUI()
     QVBoxLayout* verticalLayout_local_button;
     QSpacerItem* verticalSpacer_local_button_up;
     QPushButton* pushButton_local_button_showsdp;
+    QPushButton* pushButton_local_button_showcandidate;
     QPushButton* pushButton_local_button_press;
     QSpacerItem* verticalSpacer_local_button_down;
     QFrame* line;
@@ -253,8 +254,11 @@ void QtWidgetsTest::initUI()
 
     textEdit_local_sdp_text = new QTextEdit();
     textEdit_local_sdp_text->setObjectName(QString::fromUtf8("textEdit_local_sdp_text"));
-
     verticalLayout_local_sdp->addWidget(textEdit_local_sdp_text);
+
+    textEdit_local_candidate_text = new QTextEdit();
+    textEdit_local_candidate_text->setObjectName(QString::fromUtf8("textEdit_local_scandidate_text"));
+    verticalLayout_local_sdp->addWidget(textEdit_local_candidate_text);
 
 
     horizontalLayout_up->addLayout(verticalLayout_local_sdp);
@@ -273,6 +277,10 @@ void QtWidgetsTest::initUI()
     pushButton_local_button_showsdp = new QPushButton();
     pushButton_local_button_showsdp->setObjectName(QString::fromUtf8("pushButton_local_button_showsdp"));
     verticalLayout_local_button->addWidget(pushButton_local_button_showsdp);
+
+    pushButton_local_button_showcandidate = new QPushButton();
+    pushButton_local_button_showcandidate->setObjectName(QString::fromUtf8("pushButton_local_button_showcandidate"));
+    verticalLayout_local_button->addWidget(pushButton_local_button_showcandidate);
 
     verticalSpacer_local_button_down = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -344,9 +352,11 @@ void QtWidgetsTest::initUI()
 
     textEdit_remote_sdp_text = new QTextEdit();
     textEdit_remote_sdp_text->setObjectName(QString::fromUtf8("textEdit_remote_sdp_text"));
-
     verticalLayout_remote_sdp->addWidget(textEdit_remote_sdp_text);
 
+    textEdit_remote_candidate_text = new QTextEdit();
+    textEdit_remote_candidate_text->setObjectName(QString::fromUtf8("textEdit_remote_candidate_text"));
+    verticalLayout_remote_sdp->addWidget(textEdit_remote_candidate_text);
 
     horizontalLayout_down->addLayout(verticalLayout_remote_sdp);
 
@@ -377,6 +387,7 @@ void QtWidgetsTest::initUI()
     label_local_sdp_title_info->setText(QApplication::translate("Widget", "\346\234\254\345\234\260SDP", nullptr));
     pushButton_local_button_press->setText(QApplication::translate("Widget", "\345\220\257\345\212\250", nullptr));
     pushButton_local_button_showsdp->setText(QApplication::translate("Widget", u8"ÏÔÊ¾SDP", nullptr));
+    pushButton_local_button_showcandidate->setText(QApplication::translate("Widget", u8"ÏÔÊ¾candidate", nullptr));
     label_remote_camera_title_info->setText(QApplication::translate("Widget", "\345\257\271\347\253\257\345\252\222\344\275\223", nullptr));
     label_remote_camera_show->setText(QApplication::translate("Widget", "TextLabel", nullptr));
     label_remote_sdp_info->setText(QApplication::translate("Widget", "\345\257\271\347\253\257SDP", nullptr));
@@ -386,6 +397,9 @@ void QtWidgetsTest::initUI()
     connect(pushButton_local_camera_makesure, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_makesure_clicked);
     connect(pushButton_local_button_press, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_start_localcamera_clicked);
     connect(pushButton_local_button_showsdp, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_showsdp_localcamera_clicked);
+    connect(pushButton_local_button_showcandidate, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_showcandidate_localcamera_clicked);
+
+    connect(pushButton_remote_button_press, &QPushButton::clicked, this, &QtWidgetsTest::on_pushButton_local_remote_connect_clicked);
 }
 
 void QtWidgetsTest::checkCamera()
@@ -430,6 +444,124 @@ void QtWidgetsTest::on_pushButton_showsdp_localcamera_clicked()
 
     textEdit_local_sdp_text->setText(qstr);
 }
+
+void QtWidgetsTest::on_pushButton_showcandidate_localcamera_clicked()
+{
+    std::string uicandidate = conductor->candidateGet();
+
+    QString qstr;
+    qstr = QString::fromStdString(uicandidate);
+
+    textEdit_local_candidate_text->setText(qstr);
+}
+
+void QtWidgetsTest::connect_sdp_load()
+{
+    QString remote_sdp = textEdit_remote_sdp_text->toPlainText();
+
+    std::string str_remote_sdp = remote_sdp.toStdString();
+
+    Json::Reader reader;
+    Json::Value jmessage;
+
+    if (!reader.parse(str_remote_sdp, jmessage)) {
+        RTC_LOG(WARNING) << "Received unknown message. " << str_remote_sdp;
+        return;
+    }
+    std::string type_str;
+    std::string json_object;
+
+    rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionTypeName,
+        &type_str);
+    if (!type_str.empty()) {
+        absl::optional<webrtc::SdpType> type_maybe =
+            webrtc::SdpTypeFromString(type_str);
+        if (!type_maybe) {
+            RTC_LOG(LS_ERROR) << "Unknown SDP type: " << type_str;
+            return;
+        }
+        webrtc::SdpType type = *type_maybe;
+        std::string sdp;
+        if (!rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionSdpName,
+            &sdp)) {
+            RTC_LOG(WARNING) << "Can't parse received session description message.";
+            return;
+        }
+        webrtc::SdpParseError error;
+        std::unique_ptr<webrtc::SessionDescriptionInterface> session_description =
+            webrtc::CreateSessionDescription(type, sdp, &error);
+        if (!session_description) {
+            RTC_LOG(WARNING) << "Can't parse received session description message. "
+                "SdpParseError was: "
+                << error.description;
+            return;
+        }
+        //RTC_LOG(INFO) << " Received session description :" << message;
+        peer_connection_->SetRemoteDescription(
+            DummySetSessionDescriptionObserver::Create(),
+            session_description.release());
+        if (type == webrtc::SdpType::kOffer) {
+            peer_connection_->CreateAnswer(
+                conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+        }
+    }
+}
+
+void QtWidgetsTest::connect_candidate_load()
+{
+    QString remote_candidate = textEdit_remote_candidate_text->toPlainText();
+
+    std::string str_remote_candidate = remote_candidate.toStdString();
+
+    Json::Reader reader;
+    Json::Value jmessage;
+    if (!reader.parse(str_remote_candidate, jmessage)) {
+        //RTC_LOG(WARNING) << "Received unknown message. " << message;
+        return;
+    }
+
+    std::string type_str;
+    std::string json_object;
+
+    rtc::GetStringFromJsonObject(jmessage, kSessionDescriptionTypeName,
+        &type_str);
+    if (type_str.empty()) {
+
+        std::string sdp_mid;
+        int sdp_mlineindex = 0;
+        std::string sdp;
+        if (!rtc::GetStringFromJsonObject(jmessage, kCandidateSdpMidName,
+            &sdp_mid) ||
+            !rtc::GetIntFromJsonObject(jmessage, kCandidateSdpMlineIndexName,
+                &sdp_mlineindex) ||
+            !rtc::GetStringFromJsonObject(jmessage, kCandidateSdpName, &sdp)) {
+            RTC_LOG(WARNING) << "Can't parse received message.";
+            return;
+        }
+        webrtc::SdpParseError error;
+        std::unique_ptr<webrtc::IceCandidateInterface> candidate(
+            webrtc::CreateIceCandidate(sdp_mid, sdp_mlineindex, sdp, &error));
+        if (!candidate.get()) {
+            RTC_LOG(WARNING) << "Can't parse received candidate message. "
+                "SdpParseError was: "
+                << error.description;
+            return;
+        }
+        if (!peer_connection_->AddIceCandidate(candidate.get())) {
+            RTC_LOG(WARNING) << "Failed to apply the received candidate";
+            return;
+        }
+        //RTC_LOG(INFO) << " Received candidate :" << message;
+    }
+
+}
+
+void QtWidgetsTest::on_pushButton_local_remote_connect_clicked()
+{
+    connect_sdp_load();
+    connect_candidate_load();
+}
+
 
 bool QtWidgetsTest::if_check_desktop()
 {
@@ -510,7 +642,7 @@ void QtWidgetsTest::webrtc_init()
                 << result_or_error.error().message();
         }
     }
-
+    conductor->SetPeerConnection(peer_connection_);
     peer_connection_->CreateOffer(
         conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
 
