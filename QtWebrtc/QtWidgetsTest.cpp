@@ -139,6 +139,28 @@ QtWidgetsTest::QtWidgetsTest(QWidget *parent)
 	: QWidget(parent)
 {
     conductor = new rtc::RefCountedObject<ConductorCallback>();
+    peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
+        nullptr /* network_thread */, nullptr /* worker_thread */,
+        nullptr /* signaling_thread */, nullptr /* default_adm */,
+        webrtc::CreateBuiltinAudioEncoderFactory(),
+        webrtc::CreateBuiltinAudioDecoderFactory(),
+        webrtc::CreateBuiltinVideoEncoderFactory(),
+        webrtc::CreateBuiltinVideoDecoderFactory(), nullptr /* audio_mixer */,
+        nullptr /* audio_processing */);
+
+    webrtc::PeerConnectionInterface::RTCConfiguration config;
+    config.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
+    config.enable_dtls_srtp = true;
+    webrtc::PeerConnectionInterface::IceServer server;
+    std::string addr = "stun:stun.l.google.com:19302";
+    server.uri = addr;
+    config.servers.push_back(server);
+
+    peer_connection_ = peer_connection_factory_->CreatePeerConnection(
+        config, nullptr, nullptr, conductor);
+
+    webrtc_init();
+
     initUI();
     checkCamera();
 }
@@ -489,7 +511,7 @@ void QtWidgetsTest::connect_sdp_load()
         }
         webrtc::SdpParseError error;
         std::unique_ptr<webrtc::SessionDescriptionInterface> session_description =
-            webrtc::CreateSessionDescription(type, sdp, &error);
+            webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp, &error);
         if (!session_description) {
             RTC_LOG(WARNING) << "Can't parse received session description message. "
                 "SdpParseError was: "
@@ -501,8 +523,8 @@ void QtWidgetsTest::connect_sdp_load()
             DummySetSessionDescriptionObserver::Create(),
             session_description.release());
         if (type == webrtc::SdpType::kOffer) {
-            peer_connection_->CreateAnswer(
-                conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+            //peer_connection_->CreateAnswer(
+           //     conductor, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
         }
     }
 }
@@ -575,27 +597,6 @@ bool QtWidgetsTest::if_check_desktop()
 
 void QtWidgetsTest::webrtc_init()
 {
-
-    peer_connection_factory_ = webrtc::CreatePeerConnectionFactory(
-        nullptr /* network_thread */, nullptr /* worker_thread */,
-        nullptr /* signaling_thread */, nullptr /* default_adm */,
-        webrtc::CreateBuiltinAudioEncoderFactory(),
-        webrtc::CreateBuiltinAudioDecoderFactory(),
-        webrtc::CreateBuiltinVideoEncoderFactory(),
-        webrtc::CreateBuiltinVideoDecoderFactory(), nullptr /* audio_mixer */,
-        nullptr /* audio_processing */);
-
-    webrtc::PeerConnectionInterface::RTCConfiguration config;
-    config.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
-    config.enable_dtls_srtp = true;
-    webrtc::PeerConnectionInterface::IceServer server;
-    std::string addr = "stun:stun.l.google.com:19302";
-    server.uri = addr;
-    config.servers.push_back(server);
-
-    peer_connection_ = peer_connection_factory_->CreatePeerConnection(
-        config, nullptr, nullptr, conductor);
-
     rtc::scoped_refptr<webrtc::AudioTrackInterface> audio_track(
         peer_connection_factory_->CreateAudioTrack(
             kAudioLabel, peer_connection_factory_->CreateAudioSource(

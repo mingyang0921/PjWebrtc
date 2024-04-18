@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PjWebrtc", "PjWebrtc\PjWebr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtWebrtc", "QtWebrtc\QtWebrtc.vcxproj", "{942A4D0A-303B-4B34-9EA6-E4640506B0C1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtWebrtcOffer", "QtWebrtcOffer\QtWebrtcOffer.vcxproj", "{5A08922B-3439-46E6-8D09-3555EA0D6661}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtWebrtcAnswer", "QtWebrtcAnswer\QtWebrtcAnswer.vcxproj", "{C4E66111-E40F-47B2-9438-FADEEEEDB84B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +34,18 @@ Global
 		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Release|x64.Build.0 = Release|Win32
 		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Release|x86.ActiveCfg = Release|Win32
 		{942A4D0A-303B-4B34-9EA6-E4640506B0C1}.Release|x86.Build.0 = Release|Win32
+		{5A08922B-3439-46E6-8D09-3555EA0D6661}.Debug|x64.ActiveCfg = Debug|x64
+		{5A08922B-3439-46E6-8D09-3555EA0D6661}.Debug|x64.Build.0 = Debug|x64
+		{5A08922B-3439-46E6-8D09-3555EA0D6661}.Debug|x86.ActiveCfg = Debug|x64
+		{5A08922B-3439-46E6-8D09-3555EA0D6661}.Release|x64.ActiveCfg = Release|x64
+		{5A08922B-3439-46E6-8D09-3555EA0D6661}.Release|x64.Build.0 = Release|x64
+		{5A08922B-3439-46E6-8D09-3555EA0D6661}.Release|x86.ActiveCfg = Release|x64
+		{C4E66111-E40F-47B2-9438-FADEEEEDB84B}.Debug|x64.ActiveCfg = Debug|x64
+		{C4E66111-E40F-47B2-9438-FADEEEEDB84B}.Debug|x64.Build.0 = Debug|x64
+		{C4E66111-E40F-47B2-9438-FADEEEEDB84B}.Debug|x86.ActiveCfg = Debug|x64
+		{C4E66111-E40F-47B2-9438-FADEEEEDB84B}.Release|x64.ActiveCfg = Release|x64
+		{C4E66111-E40F-47B2-9438-FADEEEEDB84B}.Release|x64.Build.0 = Release|x64
+		{C4E66111-E40F-47B2-9438-FADEEEEDB84B}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
